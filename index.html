@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + Lit + TS</title>
+    <link rel="stylesheet" href="./src/index.css" />
+    <script type="module" src="/src/sql-editor.ts"></script>
+    <script type="module" src="/src/visal-editor.ts"></script>
+  </head>
+  <body>
+    <span>Outside</span>
+
+    <visal-editor
+      id="editor"
+      value="SELECT * FROM customer
+WHERE id = 100;
+
+SELECT * FROM user;"
+    />
+
+    <script>
+      const editor = document.getElementById("editor");
+
+      editor.renderer = (line, n) => {
+        const list = [];
+
+        if (line.indexOf("SELECT") >= 0) {
+          const d = document.createElement("div");
+          d.style.padding = "5px";
+          d.contentEditable = "false";
+          d.innerHTML = "<button style='background:#fff;'>Run</button>";
+          list.push(d);
+        }
+
+        const s = line.split(" ");
+
+        for (let i = 0; i < s.length; i++) {
+          const token = s[i];
+
+          if (token === "") {
+            continue;
+          } else if ("outerbase".indexOf(token) >= 0) {
+            const d = document.createElement("span");
+            d.style.fontWeight = "bold";
+            d.innerText = token;
+
+            list.push(d);
+
+            const a = document.createElement("strong");
+            a.style.color = "#555";
+            a.innerText = "outerbase".substring(token.length);
+            a.contentEditable = "false";
+            list.push(a);
+          } else {
+            list.push(document.createTextNode(token));
+          }
+
+          if (i + 1 < s.length) list.push(document.createTextNode(" "));
+        }
+
+        if (line === "") {
+          list.push(document.createElement("br"));
+        }
+
+        return list;
+      };
+
+      editor.addEventListener("selectchange", (e) => {
+        console.log(e.srcElement.getSelection());
+      });
+
+      editor.addEventListener("beforeinput", (e) => {
+        const s = editor.getSelection();
+
+        if (e.inputType === "insertText") {
+          editor.insertText(s.startLineNumber, s.startLineColumnNumber, e.data);
+          editor.setSelection(s.startLineNumber, s.startLineColumnNumber + 1);
+        } else if (e.inputType === "deleteContentBackward") {
+          if (s.startLineColumnNumber > 0) {
+            editor.removeText(
+              s.startLineNumber,
+              s.startLineColumnNumber - 1,
+              s.startLineNumber,
+              s.startLineColumnNumber
+            );
+            editor.setSelection(s.startLineNumber, s.startLineColumnNumber - 1);
+          } else {
+            if (s.startLineNumber > 0) {
+              const line = editor.getLineContent(s.startLineNumber);
+              const line2 = editor.getLineContent(s.startLineNumber - 1);
+              editor.removeLine(s.startLineNumber);
+              editor.insertText(s.startLineNumber - 1, line2.length, line);
+              editor.setSelection(s.startLineNumber - 1, line2.length);
+            }
+          }
+        } else if (e.inputType === "insertParagraph") {
+          editor.newLine(s.startLineNumber);
+          editor.setSelection(s.startLineNumber + 1, 0);
+        }
+      });
+    </script>
+  </body>
+</html>
