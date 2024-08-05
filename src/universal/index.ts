@@ -131,7 +131,7 @@ export class UniversalEditor extends HTMLElement {
         flex-grow: 0;
         flex-shrink: 0;
         position: relative;
-        width: 20px;
+        width: 30px;
         background: #ccc;
         overflow: hidden;
       }
@@ -141,7 +141,7 @@ export class UniversalEditor extends HTMLElement {
         padding-right: 5px;
         text-align: right;
         margin: 0;
-        width: 15px;
+        width: 25px;
         position: absolute;
       }
 
