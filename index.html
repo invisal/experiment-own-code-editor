@@ -6,66 +6,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + Lit + TS</title>
     <link rel="stylesheet" href="./src/index.css" />
-    <script type="module" src="/src/sql-editor.ts"></script>
-    <script type="module" src="/src/visal-editor.ts"></script>
+
+    <script type="module" src="/src/universal/index.ts"></script>
+    <script type="module" src="/src/universal/plugins/plain-text.ts"></script>
+    <script type="module" src="/src/universal/plugins/basic-edit.ts"></script>
   </head>
   <body>
-    <span>Outside</span>
+    <div>
+      <button id="wrap">Unwrap</button>
+      <button id="hint">Hint</button>
+    </div>
+    <br />
 
-    <visal-editor
+    <universal-editor
+      wrap
       id="editor"
-      value="SELECT * FROM customer
-WHERE id = 100;
+      value="What is Lorem Ipsum?
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
 
-SELECT * FROM user;"
-    />
+Why do we use it?
+It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+
+
+Where does it come from?
+Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of de Finibus Bonorum et Malorum (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, Lorem ipsum dolor sit amet.., comes from a line in section 1.10.32."
+    >
+      <universal-plain-text id="plain-text" />
+      <universal-basic-edit />
+    </universal-editor>
 
     <script>
       const editor = document.getElementById("editor");
+      const wrapButton = document.getElementById("wrap");
+      const hintButton = document.getElementById("hint");
 
-      editor.renderer = (line, n) => {
-        const list = [];
-
-        if (line.indexOf("SELECT") >= 0) {
-          const d = document.createElement("div");
-          d.style.padding = "5px";
-          d.contentEditable = "false";
-          d.innerHTML = "<button style='background:#fff;'>Run</button>";
-          list.push(d);
+      hintButton.addEventListener("click", () => {
+        const plainText = document.getElementById("plain-text");
+        if (plainText.getAttribute("hint") === null) {
+          plainText.setAttribute("hint", "hello");
+          hintButton.innerText = "Remove Hint";
+        } else {
+          plainText.removeAttribute("hint");
+          wrapButton.innerText = "Add Hint";
         }
+      });
 
-        const s = line.split(" ");
+      wrapButton.addEventListener("click", () => {
+        if (editor.getAttribute("wrap") === null) {
+          editor.setAttribute("wrap", "");
+          wrapButton.innerText = "Unwrap";
+        } else {
+          editor.removeAttribute("wrap");
+          wrapButton.innerText = "Wrap";
+        }
+      });
+    </script>
 
-        for (let i = 0; i < s.length; i++) {
-          const token = s[i];
+    <!-- 
+    <script>
+      const editor = document.getElementById("editor");
 
-          if (token === "") {
-            continue;
-          } else if ("outerbase".indexOf(token) >= 0) {
-            const d = document.createElement("span");
-            d.style.fontWeight = "bold";
-            d.innerText = token;
+      customElements.whenDefined("universal-editor").then(() => {
+        editor.renderer((line, n) => {
+          const list = [];
 
+          if (line.indexOf("SELECT") >= 0) {
+            const d = document.createElement("div");
+            d.style.padding = "5px";
+            d.contentEditable = "false";
+            d.innerHTML = "<button style='background:#fff;'>Run</button>";
             list.push(d);
-
-            const a = document.createElement("strong");
-            a.style.color = "#555";
-            a.innerText = "outerbase".substring(token.length);
-            a.contentEditable = "false";
-            list.push(a);
-          } else {
-            list.push(document.createTextNode(token));
           }
 
-          if (i + 1 < s.length) list.push(document.createTextNode(" "));
-        }
+          const s = line.split(" ");
 
-        if (line === "") {
-          list.push(document.createElement("br"));
-        }
+          for (let i = 0; i < s.length; i++) {
+            const token = s[i];
 
-        return list;
-      };
+            if (token === "") {
+              continue;
+            } else if ("outerbase".indexOf(token) >= 0) {
+              const d = document.createElement("span");
+              d.style.fontWeight = "bold";
+              d.innerText = token;
+
+              list.push(d);
+
+              const a = document.createElement("strong");
+              a.style.color = "#555";
+              a.innerText = "outerbase".substring(token.length);
+              a.contentEditable = "false";
+              list.push(a);
+            } else {
+              list.push(document.createTextNode(token));
+            }
+
+            if (i + 1 < s.length) list.push(document.createTextNode(" "));
+          }
+
+          if (line === "") {
+            list.push(document.createElement("br"));
+          }
+
+          return list;
+        });
+      });
 
       editor.addEventListener("selectchange", (e) => {
         console.log(e.srcElement.getSelection());
@@ -100,6 +145,6 @@ SELECT * FROM user;"
           editor.setSelection(s.startLineNumber + 1, 0);
         }
       });
-    </script>
+    </script> -->
   </body>
 </html>
