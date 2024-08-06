@@ -1,8 +1,12 @@
 import { EditorView, basicSetup } from "codemirror";
 import { promptPlugin } from "./propmt";
-import { sql, SQLite } from "@codemirror/lang-sql";
+import { Compartment, Extension, StateEffect } from "@codemirror/state";
 
 export class CodeMirror extends HTMLElement {
+  protected editor: EditorView;
+  protected extensions: { name: string; comp: Compartment; ext: Extension }[] =
+    [];
+
   constructor() {
     super();
 
@@ -11,19 +15,11 @@ export class CodeMirror extends HTMLElement {
     this.shadowRoot?.append(doc);
 
     const editor = new EditorView({
-      extensions: [
-        basicSetup,
-        ...promptPlugin,
-        sql({
-          dialect: SQLite,
-          schema: {
-            outerbase: ["id", "name"],
-            users: ["id", "name", "age"],
-          },
-        }),
-      ],
+      extensions: [basicSetup, ...promptPlugin],
       parent: doc,
     });
+
+    this.editor = editor;
 
     editor.dispatch({
       changes: {
@@ -33,6 +29,34 @@ export class CodeMirror extends HTMLElement {
 DELETE FROM users WHEER name = 'Visal';`,
       },
     });
+  }
+
+  updateExtension(extensionName: string, ext: any) {
+    const exist = this.extensions.find(({ name }) => extensionName === name);
+
+    if (!exist) {
+      const extEntry = {
+        name: extensionName,
+        comp: new Compartment(),
+        ext,
+      };
+
+      this.extensions.push(extEntry);
+
+      console.log("add plugin");
+      this.editor.dispatch({
+        effects: [StateEffect.appendConfig.of(extEntry.comp.of(ext))],
+      });
+    } else {
+      exist.ext = ext;
+      this.editor.dispatch({
+        effects: [exist.comp.reconfigure(ext)],
+      });
+    }
+  }
+
+  getEditor() {
+    return this.editor;
   }
 }
 
