@@ -7,163 +7,19 @@
     <title>Vite + Lit + TS</title>
     <link rel="stylesheet" href="./src/index.css" />
 
-    <script type="module" src="/src/universal/index.ts"></script>
-    <script type="module" src="/src/universal/plugins/plain-text.ts"></script>
-    <script type="module" src="/src/universal/plugins/basic-edit.ts"></script>
+    <script type="module" src="/src/codemirror/index.ts"></script>
   </head>
   <body>
-    <div>
-      <button id="wrap">Unwrap</button>
-      <button id="hint">Hint</button>
-    </div>
-    <br />
+    <code-mirror></code-mirror>
 
-    <universal-editor
-      wrap
-      id="editor"
-      value="film_id,title,description,release_year,language_id,original_language_id,rental_duration,rental_rate,length,replacement_cost,rating,special_features,last_update
-1,ACADEMY DINOSAUR 2,A Epic Drama of a Feminist And a Mad Scientist who must Battle a Teacher in The Canadian Rockies,1990,1,,6,0.99,86,20.99,PG,Deleted Scenes,Behind the Scenes,2006-02-14 22:03:42
-2,ACE GOLDFINGER (A),A Astounding Epistle of a Database Administrator And a Explorer who must Find a Car in Ancient China,2000,1,,3,4.99,48,12.99,PG,Trailers,Deleted Scenes,2006-02-14 22:03:42
-4,AFFAIR PREJUDICE,A Fanciful Documentary of a Frisbee And a Lumberjack who must Chase a Monkey in A Shark Tank,600,1,,5,2.99,117,26.99,PG,Commentaries,Behind the Scenes,2006-02-14 22:03:42
-7,AIRPLANE SIERRA,A Touching Saga of a Hunter And a Butler who must Discover a Butler in A Jet Boat,1996,1,,6,4.99,62,28.99,PG,Trailers,Deleted Scenes,2006-02-14 22:03:42
-8,AIRPORT POLLOCK,A Epic Tale of a Moose And a Girl who must Confront a Monkey in Ancient India,2007,1,,6,4.99,54,15.99,R,Trailers,2006-02-14 22:03:42
-9,ALABAMA DEVIL (A),A Thoughtful Panorama of a Database Administrator And a Mad Scientist who must Outgun a Mad Scientist in A Jet Boat,2006,1,,3,2.99,114,21.99,PG-13,Trailers,Deleted Scenes,2006-02-14 22:03:42
-10,ALADDIN CALENDAR,A Action-Packed Tale of a Man And a Lumberjack who must Reach a Feminist in Ancient China,2006,1,,6,4.99,63,24.99,NC-17,Trailers,Deleted Scenes,2006-02-14 22:03:42
-11,ALAMO VIDEOTAPE,A Boring Epistle of a Butler And a Cat who must Fight a Pastry Chef in A MySQL Convention,2006,1,,6,0.99,126,16.99,G,Commentaries,Behind the Scenes,2006-02-14 22:03:42
-12,ALASKA PHANTOM,A Fanciful Saga of a Hunter And a Pastry Chef who must Vanquish a Boy in Australia,2006,1,,6,0.99,136,22.99,PG,Commentaries,Deleted Scenes,2006-02-14 22:03:42
-13,ALI FOREVER,A Action-Packed Drama of a Dentist And a Crocodile who must Battle a Feminist in The Canadian Rockies,2006,1,,4,4.99,150,21.99,PG,Deleted Scenes,Behind the Scenes,2006-02-14 22:03:42
-14,ALICE FANTASIA,A Emotional Drama of a A Shark And a Database Administrator who must Vanquish a Pioneer in Soviet Georgia,2006,1,,6,0.99,94,23.99,NC-17,Trailers,Deleted Scenes,Behind the Scenes,2006-02-14 22:03:42
-15,ALIEN CENTER,A Brilliant Drama of a Cat And a Mad Scientist who must Battle a Feminist in A MySQL Convention,2006,1,,5,2.99,46,10.99,NC-17,Trailers,Commentaries,Behind the Scenes,2006-02-14 22:03:42
-16,ALLEY EVOLUTION,A Fast-Paced Drama of a Robot And a Composer who must Battle a Astronaut in New Orleans,2006,1,,6,2.99,180,23.99,NC-17,Trailers,Commentaries,2006-02-14 22:03:42
-17,ALONE TRIP,A Fast-Paced Character Study of a Composer And a Dog who must Outgun a Boat in An Abandoned Fun House,2006,1,,3,0.99,82,14.99,R,Trailers,Behind the Scenes,2006-02-14 22:03:42
-18,ALTER VICTORY,A Thoughtful Drama of a Composer And a Feminist who must Meet a Secret Agent in The Canadian Rockies,2006,1,,6,0.99,57,27.99,PG-13,Trailers,Behind the Scenes,2006-02-14 22:03:42
-19,AMADEUS HOLY,A Emotional Display of a Pioneer And a Technical Writer who must Battle a Man in A Baloon,2006,1,,6,0.99,113,20.99,PG,Commentaries,Deleted Scenes,Behind the Scenes,2006-02-14 22:03:42
-20,AMELIE HELLFIGHTERS,A Boring Drama of a Woman And a Squirrel who must Conquer a Student in A Baloon,2006,1,,4,4.99,79,23.99,R,Commentaries,Deleted Scenes,Behind the Scenes,2006-02-14 22:03:42
-21,AMERICAN CIRCUS,A Insightful Drama of a Girl And a Astronaut who must Face a Database Administrator in A Shark Tank,2006,1,,3,4.99,129,17.99,R,Commentaries,Behind the Scenes,2006-02-14 22:03:42
-22,AMISTAD MIDSUMMER,A Emotional Character Study of a Dentist And a Crocodile who must Meet a Sumo Wrestler in California,2006,1,,6,2.99,85,10.99,G,Commentaries,Behind the Scenes,2006-02-14 22:03:42
-23,ANACONDA CONFESSIONS,A Lacklusture Display of a Dentist And a Dentist who must Fight a Girl in Australia,2006,1,,3,0.99,92,9.99,R,Trailers,Deleted Scenes,2006-02-14 22:03:42
-24,ANALYZE HOOSIERS,A Thoughtful Display of a Explorer And a Pastry Chef who must Overcome a Feminist in The Sahara Desert,2006,1,,6,2.99,181,19.99,R,Trailers,Behind the Scenes,2006-02-14 22:03:42
-25,ANGELS LIFE,A Thoughtful Display of a Woman And a Astronaut who must Battle a Robot in Berlin,2006,1,,3,2.99,74,15.99,G,Trailers,2006-02-14 22:03:42
-26,ANNIE IDENTITY,A Amazing Panorama of a Pastry Chef And a Boat who must Escape a Woman in An Abandoned Amusement Park,2006,1,,3,0.99,86,15.99,G,Commentaries,Deleted Scenes,2006-02-14 22:03:42
-27,ANONYMOUS HUMAN,A Amazing Reflection of a Database Administrator And a Astronaut who must Outrace a Database Administrator in A Shark Tank,2006,1,,7,0.99,179,12.99,NC-17,Deleted Scenes,Behind the Scenes,2006-02-14 22:03:42
-28,ANTHEM LUKE,A Touching Panorama of a Waitress And a Woman who must Outrace a Dog in An Abandoned Amusement Park,2006,1,,5,4.99,91,16.99,PG-13,Deleted Scenes,Behind the Scenes,2006-02-14 22:03:42
-29,ANTITRUST TOMATOES,A Fateful Yarn of a Womanizer And a Feminist who must Succumb a Database Administrator in Ancient India,2006,1,,5,2.99,168,11.99,NC-17,Trailers,Commentaries,Deleted Scenes,2006-02-14 22:03:42
-30,ANYTHING SAVANNAH,A Epic Story of a Pastry Chef And a Woman who must Chase a Feminist in An Abandoned Fun House,2006,1,,4,2.99,82,27.99,R,Trailers,Deleted Scenes,Behind the Scenes,2006-02-14 22:03:42"
-    >
-      <universal-plain-text id="plain-text" />
-      <universal-basic-edit />
-    </universal-editor>
-
-    <script>
-      const editor = document.getElementById("editor");
-      const wrapButton = document.getElementById("wrap");
-      const hintButton = document.getElementById("hint");
-
-      hintButton.addEventListener("click", () => {
-        const plainText = document.getElementById("plain-text");
-        if (plainText.getAttribute("hint") === null) {
-          plainText.setAttribute("hint", "hello");
-          hintButton.innerText = "Remove Hint";
-        } else {
-          plainText.removeAttribute("hint");
-          hintButton.innerText = "Add Hint";
-        }
-      });
-
-      wrapButton.addEventListener("click", () => {
-        if (editor.getAttribute("wrap") === null) {
-          editor.setAttribute("wrap", "");
-          wrapButton.innerText = "Unwrap";
-        } else {
-          editor.removeAttribute("wrap");
-          wrapButton.innerText = "Wrap";
-        }
-      });
-    </script>
-
-    <!-- 
-    <script>
-      const editor = document.getElementById("editor");
-
-      customElements.whenDefined("universal-editor").then(() => {
-        editor.renderer((line, n) => {
-          const list = [];
-
-          if (line.indexOf("SELECT") >= 0) {
-            const d = document.createElement("div");
-            d.style.padding = "5px";
-            d.contentEditable = "false";
-            d.innerHTML = "<button style='background:#fff;'>Run</button>";
-            list.push(d);
-          }
-
-          const s = line.split(" ");
-
-          for (let i = 0; i < s.length; i++) {
-            const token = s[i];
-
-            if (token === "") {
-              continue;
-            } else if ("outerbase".indexOf(token) >= 0) {
-              const d = document.createElement("span");
-              d.style.fontWeight = "bold";
-              d.innerText = token;
-
-              list.push(d);
-
-              const a = document.createElement("strong");
-              a.style.color = "#555";
-              a.innerText = "outerbase".substring(token.length);
-              a.contentEditable = "false";
-              list.push(a);
-            } else {
-              list.push(document.createTextNode(token));
-            }
-
-            if (i + 1 < s.length) list.push(document.createTextNode(" "));
-          }
-
-          if (line === "") {
-            list.push(document.createElement("br"));
-          }
-
-          return list;
-        });
-      });
-
-      editor.addEventListener("selectchange", (e) => {
-        console.log(e.srcElement.getSelection());
-      });
-
-      editor.addEventListener("beforeinput", (e) => {
-        const s = editor.getSelection();
-
-        if (e.inputType === "insertText") {
-          editor.insertText(s.startLineNumber, s.startLineColumnNumber, e.data);
-          editor.setSelection(s.startLineNumber, s.startLineColumnNumber + 1);
-        } else if (e.inputType === "deleteContentBackward") {
-          if (s.startLineColumnNumber > 0) {
-            editor.removeText(
-              s.startLineNumber,
-              s.startLineColumnNumber - 1,
-              s.startLineNumber,
-              s.startLineColumnNumber
-            );
-            editor.setSelection(s.startLineNumber, s.startLineColumnNumber - 1);
-          } else {
-            if (s.startLineNumber > 0) {
-              const line = editor.getLineContent(s.startLineNumber);
-              const line2 = editor.getLineContent(s.startLineNumber - 1);
-              editor.removeLine(s.startLineNumber);
-              editor.insertText(s.startLineNumber - 1, line2.length, line);
-              editor.setSelection(s.startLineNumber - 1, line2.length);
-            }
-          }
-        } else if (e.inputType === "insertParagraph") {
-          editor.newLine(s.startLineNumber);
-          editor.setSelection(s.startLineNumber + 1, 0);
-        }
-      });
-    </script> -->
+    <ul>
+      <li>Goto empty line to test inline-chat prompt</li>
+      <li>
+        There are two table:
+        <pre>users(id, name, age)</pre>
+        <pre>outerbase(id, name)</pre>
+        Type `SELECT outerbase.` to get suggest.
+      </li>
+    </ul>
   </body>
 </html>

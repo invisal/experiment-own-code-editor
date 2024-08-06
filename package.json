@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@codemirror/lang-sql": "^6.7.0",
     "codemirror": "^6.0.1",
     "lit": "^3.1.4"
   },
