@@ -1,6 +1,8 @@
 import { EditorView } from "codemirror";
 import { Prec, StateField, StateEffect } from "@codemirror/state";
 import { WidgetType, Decoration, keymap } from "@codemirror/view";
+import { CodeMirrorPlugin } from "./plugin";
+import { customElement } from "lit/decorators.js";
 
 class PlaceholderWidget extends WidgetType {
   toDOM(): HTMLElement {
@@ -162,4 +164,18 @@ const promptKeyBinding = Prec.highest(
   ])
 );
 
-export const promptPlugin = [promptKeyBinding, promptStatePlugin];
+@customElement("code-mirror-prompt")
+export class PromptCodeMirrorPlugin extends CodeMirrorPlugin {
+  connectedCallback() {
+    super.connectedCallback();
+
+    this.editor.updateExtension("prompt", [
+      promptKeyBinding,
+      promptStatePlugin,
+    ]);
+  }
+
+  disconnectedCallback() {
+    this.editor.removeExtension("prompt");
+  }
+}

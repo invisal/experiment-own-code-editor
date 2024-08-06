@@ -1,9 +1,13 @@
+import { LitElement } from "lit";
 import { CodeMirror } from ".";
+import { property } from "lit/decorators.js";
 
-export class CodeMirrorPlugin extends HTMLElement {
-  protected editor!: CodeMirror;
+export class CodeMirrorPlugin extends LitElement {
+  @property() editor!: CodeMirror;
 
   connectedCallback() {
+    super.connectedCallback();
+
     let ancestor = this.parentElement;
     while (ancestor) {
       if (ancestor.tagName.toLowerCase() === "code-mirror") {

@@ -1,11 +1,12 @@
 import { EditorView, basicSetup } from "codemirror";
-import { promptPlugin } from "./propmt";
 import { Compartment, Extension, StateEffect } from "@codemirror/state";
 
 export class CodeMirror extends HTMLElement {
+  static observedAttributes = ["code"];
+
   protected editor: EditorView;
   protected extensions: { name: string; comp: Compartment; ext: Extension }[] =
-    [];
+    [{ name: "basic-setup", ext: basicSetup, comp: new Compartment() }];
 
   constructor() {
     super();
@@ -15,20 +16,27 @@ export class CodeMirror extends HTMLElement {
     this.shadowRoot?.append(doc);
 
     const editor = new EditorView({
-      extensions: [basicSetup, ...promptPlugin],
+      extensions: this.getExtensions(),
       parent: doc,
     });
 
     this.editor = editor;
+  }
 
-    editor.dispatch({
-      changes: {
-        from: 0,
-        insert: `SELECT * FROM outerbase WHERE age < 10;
+  attributeChangedCallback(name: string, _: string, value: string) {
+    if (name === "code") {
+      this.editor.dispatch({
+        changes: {
+          from: 0,
+          to: this.editor.state.doc.length,
+          insert: value,
+        },
+      });
+    }
+  }
 
-DELETE FROM users WHEER name = 'Visal';`,
-      },
-    });
+  private getExtensions() {
+    return this.extensions.map((ext) => ext.comp.of(ext.ext));
   }
 
   updateExtension(extensionName: string, ext: any) {
@@ -43,7 +51,6 @@ DELETE FROM users WHEER name = 'Visal';`,
 
       this.extensions.push(extEntry);
 
-      console.log("add plugin");
       this.editor.dispatch({
         effects: [StateEffect.appendConfig.of(extEntry.comp.of(ext))],
       });
@@ -51,6 +58,16 @@ DELETE FROM users WHEER name = 'Visal';`,
       exist.ext = ext;
       this.editor.dispatch({
         effects: [exist.comp.reconfigure(ext)],
+      });
+    }
+  }
+
+  removeExtension(name: string) {
+    const extIndex = this.extensions.findIndex((ext) => ext.name === name);
+    if (extIndex >= 0) {
+      this.extensions.splice(extIndex, 1);
+      this.editor.dispatch({
+        effects: StateEffect.reconfigure.of(this.getExtensions()),
       });
     }
   }

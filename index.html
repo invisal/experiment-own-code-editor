@@ -9,10 +9,18 @@
 
     <script type="module" src="/src/codemirror/index.ts"></script>
     <script type="module" src="/src/codemirror/sql.ts"></script>
+    <script type="module" src="/src/codemirror/prompt.ts"></script>
   </head>
   <body>
-    <code-mirror>
-      <code-mirror-sql />
+    <code-mirror
+      code="SELECT * FROM outerbase WHERE age < 10;
+
+DELETE FROM users WHEER name = 'Visal';"
+    >
+      <code-mirror-sql
+        schema='{"outerbase": ["id", "name"], "users": ["id", "name", "age"]}'
+      />
+      <code-mirror-prompt />
     </code-mirror>
 
     <ul>
