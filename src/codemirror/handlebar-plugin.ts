@@ -42,7 +42,7 @@ export class CodeMirrorHandlebarPlugin extends CodeMirrorPlugin {
 
   @property() set variables(value: string) {
     this._variables = value;
-    this.setupExtension(this.getAttribute("variables") ?? "");
+    this.setupExtension(value ?? "");
   }
 
   get variables(): string {
@@ -83,6 +83,8 @@ export class CodeMirrorHandlebarPlugin extends CodeMirrorPlugin {
   }
 
   setupExtension(variables: string) {
+    if (!this.editor) return;
+
     const markHandlebarPlugin = ViewPlugin.fromClass(
       class {
         decorations: DecorationSet;

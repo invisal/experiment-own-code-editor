@@ -20,4 +20,6 @@ export class CodeMirrorPlugin extends LitElement {
 
     this.editor = ancestor as unknown as CodeMirror;
   }
+
+  register() {}
 }

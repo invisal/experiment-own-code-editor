@@ -88,8 +88,8 @@ SET temp_data = CONCAT(temp_data, ' - Updated with a long concatenation string t
     <br /><br />
 
     <select id="theme">
-      <option value="moondust">Moondust</option>
-      <option value="invasion" selected>Invasion</option>
+      <option value="moondust" selected>Moondust</option>
+      <option value="invasion">Invasion</option>
       <option value="freedom">Freedom</option>
     </select>
 
@@ -105,12 +105,25 @@ SET temp_data = CONCAT(temp_data, ' - Updated with a long concatenation string t
     <br />
 
     <div style="margin: 10px 0 10px 0">Schema</div>
-    <textarea id="schema" style="width: 500px; height: 100px; padding: 10px">
+    <textarea
+      id="schema"
+      style="width: 500px; height: 100px; padding: 10px"
+      spellcheck="false"
+    >
 {
   "outerbase": ["id", "name"],
   "users": ["id", "name", "age"]
 }</textarea
     >
+
+    <div style="margin: 10px 0 10px 0">Handlebar Variable</div>
+    <input
+      type="text"
+      value="age_range,salary_range"
+      id="handlebar"
+      spellcheck="false"
+      style="width: 500px; padding: 10px"
+    />
 
     <script>
       const editorElement = document.getElementById("editor");
@@ -120,8 +133,9 @@ SET temp_data = CONCAT(temp_data, ' - Updated with a long concatenation string t
       const wrapInput = document.getElementById("wrap");
       const darkInput = document.getElementById("dark");
       const themeInput = document.getElementById("theme");
+      const handlebarInput = document.getElementById("handlebar");
 
-      customElements.whenDefined("code-mirror", () => {
+      customElements.whenDefined("code-mirror").then(() => {
         editorElement.color = darkInput.checked ? "dark" : "light";
         editorElement.theme = themeInput.value;
 
@@ -134,6 +148,11 @@ SET temp_data = CONCAT(temp_data, ' - Updated with a long concatenation string t
 
       schemaElement.onblur = () => {
         schemaPlugin.schema = schemaElement.value;
+      };
+
+      handlebarInput.onblur = () => {
+        document.getElementsByTagName("code-mirror-handlebar")[0].variables =
+          handlebarInput.value;
       };
 
       wrapInput.onchange = () => {

@@ -14,13 +14,15 @@ export class CodeMirrorSqlPlugin extends CodeMirrorPlugin {
     }
 
     // Reload the code mirror extensions
-    this.editor.updateExtension(
-      "sql-plugin",
-      sql({
-        dialect: SQLite,
-        schema: this.schemaJson,
-      })
-    );
+    if (this.editor) {
+      this.editor.updateExtension(
+        "sql-plugin",
+        sql({
+          dialect: SQLite,
+          schema: this.schemaJson,
+        })
+      );
+    }
   }
 
   get schema(): string {
