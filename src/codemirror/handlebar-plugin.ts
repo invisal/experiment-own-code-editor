@@ -9,7 +9,7 @@ import {
   ViewUpdate,
   type DecorationSet,
 } from "@codemirror/view";
-import { customElement } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import { CodeMirrorPlugin } from "./base-plugin";
 
@@ -38,9 +38,51 @@ function decorateHandlebar(view: EditorView) {
 
 @customElement("code-mirror-handlebar")
 export class CodeMirrorHandlebarPlugin extends CodeMirrorPlugin {
+  protected _variables: string = "";
+
+  @property() set variables(value: string) {
+    this._variables = value;
+    this.setupExtension(this.getAttribute("variables") ?? "");
+  }
+
+  get variables(): string {
+    return this._variables;
+  }
+
   connectedCallback() {
     super.connectedCallback();
+    this.setupExtension(this.getAttribute("variables") ?? "");
+  }
 
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.editor.removeExtension("handlebars");
+  }
+
+  setupAutoCompletion(variables: string) {
+    const completionList = variables.split(",").filter(Boolean);
+    if (completionList.length === 0) return null;
+
+    function handlebarCompletion(context: CompletionContext) {
+      const node = syntaxTree(context.state).resolveInner(context.pos);
+
+      let ptr = node.parent;
+      if (ptr?.type.name !== "Braces" && ptr?.type.name !== "Brackets")
+        return null;
+
+      return {
+        from: node.from + 1,
+        options: completionList.map((variableName) => ({
+          label: variableName,
+          type: "variable",
+        })),
+      };
+    }
+
+    return SQLite.language.data.of({ autocomplete: handlebarCompletion });
+  }
+
+  setupExtension(variables: string) {
     const markHandlebarPlugin = ViewPlugin.fromClass(
       class {
         decorations: DecorationSet;
@@ -62,25 +104,13 @@ export class CodeMirrorHandlebarPlugin extends CodeMirrorPlugin {
       },
     });
 
-    function handlebarCompletion(context: CompletionContext) {
-      const node = syntaxTree(context.state).resolveInner(context.pos);
-
-      let ptr = node.parent;
-      if (ptr?.type.name !== "Braces") return null;
-
-      return {
-        from: node.from + 1,
-        options: [
-          { label: "variable1", type: "keyword" },
-          { label: "variable2", type: "keyword" },
-        ],
-      };
-    }
-
-    this.editor.updateExtension("handlebars", [
-      markHandlebarPlugin,
-      markHandlebarTheme,
-      SQLite.language.data.of({ autocomplete: handlebarCompletion }),
-    ]);
+    this.editor.updateExtension(
+      "handlebars",
+      [
+        markHandlebarPlugin,
+        markHandlebarTheme,
+        this.setupAutoCompletion(variables),
+      ].filter(Boolean)
+    );
   }
 }

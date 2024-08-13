@@ -1,17 +1,78 @@
 import { Compartment, StateEffect, type Extension } from "@codemirror/state";
-import { basicSetup, EditorView } from "codemirror";
+import {
+  defaultHighlightStyle,
+  syntaxHighlighting,
+  indentOnInput,
+  bracketMatching,
+  foldGutter,
+  foldKeymap,
+} from "@codemirror/language";
+import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
+import {
+  keymap,
+  highlightSpecialChars,
+  drawSelection,
+  highlightActiveLine,
+  dropCursor,
+  rectangularSelection,
+  crosshairCursor,
+  lineNumbers,
+  highlightActiveLineGutter,
+} from "@codemirror/view";
+import {
+  autocompletion,
+  completionKeymap,
+  closeBrackets,
+  closeBracketsKeymap,
+} from "@codemirror/autocomplete";
+import { EditorView } from "codemirror";
 import { LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { moondustTheme } from "./theme";
 
 @customElement("code-mirror")
 export class CodeMirror extends LitElement {
   protected container: HTMLDivElement;
   protected editor: EditorView;
   protected extensions: { name: string; comp: Compartment; ext: Extension }[] =
-    [{ name: "basic-setup", ext: basicSetup, comp: new Compartment() }];
+    [];
+
+  protected isWrapped: boolean = false;
 
   constructor() {
     super();
+
+    // Default extensions
+    this.extensions = [
+      {
+        name: "basic-setup",
+        ext: [
+          lineNumbers(),
+          highlightActiveLineGutter(),
+          history(),
+          dropCursor(),
+          indentOnInput(),
+          syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+          autocompletion(),
+          highlightActiveLine(),
+          keymap.of([
+            ...closeBracketsKeymap,
+            ...defaultKeymap,
+            ...historyKeymap,
+            ...foldKeymap,
+            ...completionKeymap,
+          ]),
+        ],
+        comp: new Compartment(),
+      },
+      {
+        name: "theme",
+        ext: moondustTheme(
+          typeof this.getAttribute("dark") === "string" ? "dark" : "light"
+        ),
+        comp: new Compartment(),
+      },
+    ];
 
     const doc = document.createElement("div");
     doc.style.height = "100%";
@@ -40,6 +101,20 @@ export class CodeMirror extends LitElement {
         insert: value,
       },
     });
+  }
+
+  @property() set wrap(value: string | null) {
+    if (value !== null) {
+      this.isWrapped = true;
+      this.updateExtension("line-wrap", EditorView.lineWrapping);
+    } else {
+      this.isWrapped = false;
+      this.removeExtension("line-wrap");
+    }
+  }
+
+  get wrap(): boolean {
+    return this.isWrapped;
   }
 
   get value(): string {

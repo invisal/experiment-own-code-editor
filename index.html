@@ -14,6 +14,7 @@
   <body>
     <div style="height: 400px">
       <code-mirror
+        wrap
         value="-- Creating a table with various data types and constraints
 CREATE TABLE employees (
     employee_id INT PRIMARY KEY, -- Primary key constraint
@@ -75,8 +76,10 @@ SET temp_data = CONCAT(temp_data, ' - Updated with a long concatenation string t
       >
         <code-mirror-sql
           schema='{"outerbase": ["id", "name"], "users": ["id", "name", "age"]}'
-        />
-        <code-mirror-handlebar />
+        ></code-mirror-sql>
+        <code-mirror-handlebar
+          variables="age_range,salary_range"
+        ></code-mirror-handlebar>
       </code-mirror>
     </div>
 
