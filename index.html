@@ -12,9 +12,10 @@
     <script type="module" src="/src/codemirror/handlebar-plugin.ts"></script>
   </head>
   <body>
-    <div style="height: 400px">
+    <div id="container" style="height: 400px">
       <code-mirror
-        wrap
+        theme="invasion"
+        id="editor"
         value="-- Creating a table with various data types and constraints
 CREATE TABLE employees (
     employee_id INT PRIMARY KEY, -- Primary key constraint
@@ -86,19 +87,19 @@ SET temp_data = CONCAT(temp_data, ' - Updated with a long concatenation string t
 
     <br /><br />
 
-    <select>
-      <option>Moondust</option>
-      <option>Invasion</option>
-      <option>Freedom</option>
+    <select id="theme">
+      <option value="moondust">Moondust</option>
+      <option value="invasion" selected>Invasion</option>
+      <option value="freedom">Freedom</option>
     </select>
 
     <label>
-      <input type="checkbox" />
+      <input type="checkbox" id="dark" />
       <span>Dark Mode</span>
     </label>
 
     <label>
-      <input type="checkbox" />
+      <input type="checkbox" id="wrap" />
       <span>Wrap</span>
     </label>
     <br />
@@ -112,12 +113,46 @@ SET temp_data = CONCAT(temp_data, ' - Updated with a long concatenation string t
     >
 
     <script>
+      const editorElement = document.getElementById("editor");
+      const containerElement = document.getElementById("container");
       const schemaElement = document.getElementById("schema");
       const schemaPlugin = document.getElementById("schema-plugin");
+      const wrapInput = document.getElementById("wrap");
+      const darkInput = document.getElementById("dark");
+      const themeInput = document.getElementById("theme");
 
-      schemaElement.addEventListener("blur", () => {
-        schemaPlugin.schema = schemaElement.value;
+      customElements.whenDefined("code-mirror", () => {
+        editorElement.color = darkInput.checked ? "dark" : "light";
+        editorElement.theme = themeInput.value;
+
+        if (darkInput.checked) {
+          containerElement.style.background = "#000";
+        } else {
+          containerElement.style.background = "#fff";
+        }
       });
+
+      schemaElement.onblur = () => {
+        schemaPlugin.schema = schemaElement.value;
+      };
+
+      wrapInput.onchange = () => {
+        editorElement.wrap = wrapInput.checked ? "" : null;
+      };
+
+      darkInput.onchange = () => {
+        editorElement.color = darkInput.checked ? "dark" : "light";
+        if (darkInput.checked) {
+          containerElement.style.background = "#000";
+        } else {
+          containerElement.style.background = "#fff";
+        }
+      };
+
+      themeInput.onchange = () => {
+        console.log(themeInput.value);
+        editorElement.theme = themeInput.value;
+      };
     </script>
   </body>
 </html>

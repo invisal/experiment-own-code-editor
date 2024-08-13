@@ -30,7 +30,7 @@ import {
 import { EditorView } from "codemirror";
 import { LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { moondustTheme } from "./theme";
+import { getPredefineTheme } from "./theme";
 
 @customElement("code-mirror")
 export class CodeMirror extends LitElement {
@@ -40,9 +40,14 @@ export class CodeMirror extends LitElement {
     [];
 
   protected isWrapped: boolean = false;
+  protected _color: "dark" | "light" = "light";
+  protected _theme: string = "moondust";
 
   constructor() {
     super();
+
+    this._color = this.getAttribute("color") === "dark" ? "dark" : "light";
+    this._theme = this.getAttribute("theme") ?? "moondust";
 
     // Default extensions
     this.extensions = [
@@ -88,9 +93,7 @@ export class CodeMirror extends LitElement {
       },
       {
         name: "theme",
-        ext: moondustTheme(
-          typeof this.getAttribute("dark") === "string" ? "dark" : "light"
-        ),
+        ext: getPredefineTheme(this._color, this._theme),
         comp: new Compartment(),
       },
     ];
@@ -133,6 +136,24 @@ export class CodeMirror extends LitElement {
       this.isWrapped = false;
       this.removeExtension("line-wrap");
     }
+  }
+
+  @property() set color(value: string | null) {
+    this._color = value === "dark" ? "dark" : "light";
+    this.updateExtension("theme", getPredefineTheme(this._color, this._theme));
+  }
+
+  @property() set theme(value: string) {
+    this._theme = value;
+    this.updateExtension("theme", getPredefineTheme(this._color, this._theme));
+  }
+
+  get theme() {
+    return this._theme;
+  }
+
+  get color() {
+    return this._color;
   }
 
   get wrap(): boolean {

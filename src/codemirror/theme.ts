@@ -73,6 +73,7 @@ import {
 import { tags as t } from "@lezer/highlight";
 
 interface ThemeSetting {
+  theme: "dark" | "light";
   foreground?: string;
   gutterBackground?: string;
   gutterForeground?: string;
@@ -138,12 +139,19 @@ function createCodeMirrorTheme(
     themeStyles[".cm-activeLineGutter"].color = settings.gutterActiveForeground;
   }
 
-  const themeExtension = EditorView.theme(themeStyles);
+  const themeExtension = EditorView.theme(themeStyles, {
+    dark: settings.theme === "dark",
+  });
 
   return [themeExtension, syntaxHighlighting(highlightStyle)];
 }
 
-export function moondustTheme(theme: "dark" | "light"): Extension {
+export function getPredefineTheme(color: "dark" | "light", themeName: string) {
+  if (themeName === "invasion") return createInvasionTheme(color);
+  return createMoondustTheme(color);
+}
+
+function createMoondustTheme(theme: "dark" | "light"): Extension {
   if (theme === "light") {
     return createCodeMirrorTheme(
       [
@@ -171,11 +179,12 @@ export function moondustTheme(theme: "dark" | "light"): Extension {
           color: "indigo",
         },
         { tag: [t.typeName], color: "#111111" },
-        { tag: [t.operator, t.operatorKeyword], color: "indigo" },
+        { tag: [t.operator, t.operatorKeyword], color: "24292e" },
         { tag: [t.meta, t.comment], color: "#737373" },
         { tag: [t.atom, t.bool, t.special(t.variableName)], color: "#111111" },
       ],
       {
+        theme,
         foreground: "#111111",
         selection: "#ccc",
         lineHighlight: "#eee",
@@ -193,7 +202,7 @@ export function moondustTheme(theme: "dark" | "light"): Extension {
           tag: [t.name, t.deleted, t.character, t.macroName],
           color: "white",
         },
-        { tag: [t.propertyName], color: "#737373" },
+        { tag: [t.propertyName], color: "white" },
         {
           tag: [t.string, t.special(t.string)],
           color: "#737373",
@@ -217,8 +226,84 @@ export function moondustTheme(theme: "dark" | "light"): Extension {
         { tag: [t.atom, t.bool, t.special(t.variableName)], color: "#111111" },
       ],
       {
+        theme,
         foreground: "#fff",
+        selection: "#333",
+        lineHighlight: "#151515",
+        gutterForeground: "#737373",
         gutterBackground: "inherit",
+        gutterActiveForeground: "#fff",
+        gutterBorder: "transparent",
+      }
+    );
+  }
+}
+
+function createInvasionTheme(theme: "dark" | "light"): Extension {
+  if (theme === "light") {
+    return createCodeMirrorTheme(
+      [
+        { tag: [t.keyword, t.typeName, t.standard(t.name)], color: "#7f00ff" },
+        { tag: [t.string], color: "#228b22" },
+        { tag: [t.className], color: "#737373" },
+        {
+          tag: [t.number],
+          color: "#0000ff",
+        },
+        { tag: [t.operator, t.operatorKeyword], color: "#24292e" },
+        { tag: [t.lineComment, t.blockComment, t.comment], color: "#a3a3a3" },
+        { tag: [t.null, t.bool], color: "#7f00ff" },
+      ],
+      {
+        theme,
+        foreground: "#000000",
+        selection: "#ccc",
+        lineHighlight: "#eee",
+        gutterForeground: "#737373",
+        gutterBackground: "inherit",
+        gutterActiveForeground: "#000",
+        gutterBorder: "transparent",
+      }
+    );
+  } else {
+    return createCodeMirrorTheme(
+      [
+        { tag: t.keyword, color: "#737373" },
+        {
+          tag: [t.name, t.deleted, t.character, t.macroName],
+          color: "white",
+        },
+        { tag: [t.propertyName], color: "white" },
+        {
+          tag: [t.string, t.special(t.string)],
+          color: "#737373",
+        },
+        { tag: [t.function(t.variableName), t.labelName], color: "#737373" },
+        { tag: [t.className], color: "#737373" },
+        {
+          tag: [
+            t.number,
+            t.changed,
+            t.annotation,
+            t.modifier,
+            t.self,
+            t.namespace,
+          ],
+          color: "white",
+        },
+        { tag: [t.typeName], color: "white" },
+        { tag: [t.operator, t.operatorKeyword], color: "white" },
+        { tag: [t.meta, t.comment], color: "#737373" },
+        { tag: [t.atom, t.bool, t.special(t.variableName)], color: "#111111" },
+      ],
+      {
+        theme,
+        foreground: "#fff",
+        selection: "#333",
+        lineHighlight: "#151515",
+        gutterForeground: "#737373",
+        gutterBackground: "inherit",
+        gutterActiveForeground: "#fff",
         gutterBorder: "transparent",
       }
     );
