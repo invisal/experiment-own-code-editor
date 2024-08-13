@@ -1,6 +1,6 @@
 import { LitElement } from "lit";
-import { CodeMirror } from ".";
 import { property } from "lit/decorators.js";
+import { CodeMirror } from ".";
 
 export class CodeMirrorPlugin extends LitElement {
   @property() editor!: CodeMirror;
@@ -16,7 +16,7 @@ export class CodeMirrorPlugin extends LitElement {
       ancestor = ancestor.parentElement;
     }
 
-    if (!ancestor) throw new Error("Failed to find parent <text-editor />");
+    if (!ancestor) throw new Error("Failed to find parent <code-mirror />");
 
     this.editor = ancestor as unknown as CodeMirror;
   }

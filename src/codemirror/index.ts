@@ -1,9 +1,11 @@
-import { EditorView, basicSetup } from "codemirror";
-import { Compartment, Extension, StateEffect } from "@codemirror/state";
+import { Compartment, StateEffect, type Extension } from "@codemirror/state";
+import { basicSetup, EditorView } from "codemirror";
+import { LitElement } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
-export class CodeMirror extends HTMLElement {
-  static observedAttributes = ["code"];
-
+@customElement("code-mirror")
+export class CodeMirror extends LitElement {
+  protected container: HTMLDivElement;
   protected editor: EditorView;
   protected extensions: { name: string; comp: Compartment; ext: Extension }[] =
     [{ name: "basic-setup", ext: basicSetup, comp: new Compartment() }];
@@ -12,6 +14,8 @@ export class CodeMirror extends HTMLElement {
     super();
 
     const doc = document.createElement("div");
+    doc.style.height = "100%";
+
     this.attachShadow({ mode: "open" });
     this.shadowRoot?.append(doc);
 
@@ -21,22 +25,39 @@ export class CodeMirror extends HTMLElement {
     });
 
     this.editor = editor;
+    this.container = doc;
   }
 
-  attributeChangedCallback(name: string, _: string, value: string) {
-    if (name === "code") {
-      this.editor.dispatch({
-        changes: {
-          from: 0,
-          to: this.editor.state.doc.length,
-          insert: value,
-        },
-      });
-    }
+  render() {
+    return this.container;
+  }
+
+  @property() set value(value: string) {
+    this.editor.dispatch({
+      changes: {
+        from: 0,
+        to: this.editor.state.doc.length,
+        insert: value,
+      },
+    });
+  }
+
+  get value(): string {
+    return this.editor.state.doc.toString();
   }
 
   private getExtensions() {
-    return this.extensions.map((ext) => ext.comp.of(ext.ext));
+    return [
+      EditorView.theme({
+        "&": {
+          height: "100%",
+        },
+        "& .cm-scroller": {
+          height: "100% !important",
+        },
+      }),
+      ...this.extensions.map((ext) => ext.comp.of(ext.ext)),
+    ];
   }
 
   updateExtension(extensionName: string, ext: any) {
@@ -76,5 +97,3 @@ export class CodeMirror extends HTMLElement {
     return this.editor;
   }
 }
-
-customElements.define("code-mirror", CodeMirror);

@@ -1,6 +1,6 @@
+import { sql, SQLite, type SQLNamespace } from "@codemirror/lang-sql";
 import { customElement, property } from "lit/decorators.js";
-import { CodeMirrorPlugin } from "./plugin";
-import { sql, SQLite, SQLNamespace } from "@codemirror/lang-sql";
+import { CodeMirrorPlugin } from "./base-plugin";
 
 @customElement("code-mirror-sql")
 export class CodeMirrorSqlPlugin extends CodeMirrorPlugin {
