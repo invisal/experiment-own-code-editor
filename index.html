@@ -75,6 +75,7 @@ UPDATE temporary_table
 SET temp_data = CONCAT(temp_data, ' - Updated with a long concatenation string that extends beyond usual length, demonstrating the capability to handle very long text updates effectively in SQL'); -- Concatenation operator to update text"
       >
         <code-mirror-sql
+          id="schema-plugin"
           schema='{"outerbase": ["id", "name"], "users": ["id", "name", "age"]}'
         ></code-mirror-sql>
         <code-mirror-handlebar
@@ -83,14 +84,40 @@ SET temp_data = CONCAT(temp_data, ' - Updated with a long concatenation string t
       </code-mirror>
     </div>
 
-    <ul>
-      <li>Goto empty line to test inline-chat prompt</li>
-      <li>
-        There are two table:
-        <pre>users(id, name, age)</pre>
-        <pre>outerbase(id, name)</pre>
-        Type `SELECT outerbase.` to get suggest.
-      </li>
-    </ul>
+    <br /><br />
+
+    <select>
+      <option>Moondust</option>
+      <option>Invasion</option>
+      <option>Freedom</option>
+    </select>
+
+    <label>
+      <input type="checkbox" />
+      <span>Dark Mode</span>
+    </label>
+
+    <label>
+      <input type="checkbox" />
+      <span>Wrap</span>
+    </label>
+    <br />
+
+    <div style="margin: 10px 0 10px 0">Schema</div>
+    <textarea id="schema" style="width: 500px; height: 100px; padding: 10px">
+{
+  "outerbase": ["id", "name"],
+  "users": ["id", "name", "age"]
+}</textarea
+    >
+
+    <script>
+      const schemaElement = document.getElementById("schema");
+      const schemaPlugin = document.getElementById("schema-plugin");
+
+      schemaElement.addEventListener("blur", () => {
+        schemaPlugin.schema = schemaElement.value;
+      });
+    </script>
   </body>
 </html>

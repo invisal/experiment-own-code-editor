@@ -4,8 +4,15 @@ import {
   syntaxHighlighting,
   indentOnInput,
   foldKeymap,
+  indentUnit,
 } from "@codemirror/language";
-import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
+import {
+  defaultKeymap,
+  history,
+  historyKeymap,
+  indentMore,
+  indentLess,
+} from "@codemirror/commands";
 import {
   keymap,
   highlightActiveLine,
@@ -15,8 +22,10 @@ import {
 } from "@codemirror/view";
 import {
   autocompletion,
-  completionKeymap,
   closeBracketsKeymap,
+  acceptCompletion,
+  completionStatus,
+  startCompletion,
 } from "@codemirror/autocomplete";
 import { EditorView } from "codemirror";
 import { LitElement } from "lit";
@@ -48,12 +57,31 @@ export class CodeMirror extends LitElement {
           syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
           autocompletion(),
           highlightActiveLine(),
+          indentUnit.of("  "),
           keymap.of([
+            {
+              key: "Tab",
+              preventDefault: true,
+              run: (target) => {
+                if (completionStatus(target.state) === "active") {
+                  acceptCompletion(target);
+                } else {
+                  indentMore(target);
+                }
+                return true;
+              },
+              shift: indentLess,
+            },
+            {
+              key: "Ctrl-Space",
+              mac: "Cmd-i",
+              preventDefault: true,
+              run: startCompletion,
+            },
             ...closeBracketsKeymap,
             ...defaultKeymap,
             ...historyKeymap,
             ...foldKeymap,
-            ...completionKeymap,
           ]),
         ],
         comp: new Compartment(),
