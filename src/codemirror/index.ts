@@ -3,26 +3,19 @@ import {
   defaultHighlightStyle,
   syntaxHighlighting,
   indentOnInput,
-  bracketMatching,
-  foldGutter,
   foldKeymap,
 } from "@codemirror/language";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import {
   keymap,
-  highlightSpecialChars,
-  drawSelection,
   highlightActiveLine,
   dropCursor,
-  rectangularSelection,
-  crosshairCursor,
   lineNumbers,
   highlightActiveLineGutter,
 } from "@codemirror/view";
 import {
   autocompletion,
   completionKeymap,
-  closeBrackets,
   closeBracketsKeymap,
 } from "@codemirror/autocomplete";
 import { EditorView } from "codemirror";
@@ -81,6 +74,7 @@ export class CodeMirror extends LitElement {
     this.shadowRoot?.append(doc);
 
     const editor = new EditorView({
+      doc: this.getAttribute("value") ?? "",
       extensions: this.getExtensions(),
       parent: doc,
     });
