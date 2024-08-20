@@ -53,13 +53,9 @@ class PromptWidget extends WidgetType {
           <div style='flex-grow:1; justify-content: end;'>Esc to close</div>
         </div>
       </div>
-      <div class='prompt-preview'></div>
     `;
 
     const input = container.querySelector("textarea") as HTMLTextAreaElement;
-    const preview = container.querySelector(
-      ".prompt-preview"
-    ) as HTMLDivElement;
 
     const generateButton = container.querySelector(
       "#prompt-generate"
