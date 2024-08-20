@@ -34,8 +34,7 @@ function createCodeMirrorTheme(
     },
     ".cm-activeLineGutter": {},
     ".cm-activeLine": {},
-    "&.cm-focused .cm-selectionBackground, & .cm-line::selection, & .cm-selectionLayer .cm-selectionBackground, .cm-content ::selection":
-      {},
+    ".cm-focused": { outline: "none" },
   };
 
   if (settings.foreground) {

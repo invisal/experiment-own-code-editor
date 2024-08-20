@@ -7,13 +7,14 @@
     <title>Vite + Lit + TS</title>
     <link rel="stylesheet" href="./src/index.css" />
 
-    <script type="module" src="/src/codemirror/index.ts"></script>
-    <script type="module" src="/src/codemirror/sql-plugin.ts"></script>
-    <script type="module" src="/src/codemirror/handlebar-plugin.ts"></script>
+    <script type="module" src="/src/astra-editor/index.ts"></script>
+    <script type="module" src="/src/astra-editor/plugins/sql.ts"></script>
+    <script type="module" src="/src/astra-editor/plugins/prompt.ts"></script>
+    <script type="module" src="/src/astra-editor/plugins/handlebar.ts"></script>
   </head>
   <body>
-    <div id="container" style="height: 400px">
-      <code-mirror
+    <div id="container" style="height: 600px">
+      <astra-editor
         theme="invasion"
         id="editor"
         value="-- Creating a table with various data types and constraints
@@ -75,14 +76,15 @@ VALUES (1, 'Sample data with a very long string that spans multiple words and is
 UPDATE temporary_table 
 SET temp_data = CONCAT(temp_data, ' - Updated with a long concatenation string that extends beyond usual length, demonstrating the capability to handle very long text updates effectively in SQL'); -- Concatenation operator to update text"
       >
-        <code-mirror-sql
+        <astra-editor-sql
           id="schema-plugin"
           schema='{"outerbase": ["id", "name"], "users": ["id", "name", "age"]}'
-        ></code-mirror-sql>
-        <code-mirror-handlebar
+        ></astra-editor-sql>
+        <astra-editor-handlebar
           variables="age_range,salary_range"
-        ></code-mirror-handlebar>
-      </code-mirror>
+        ></astra-editor-handlebar>
+        <astra-editor-prompt id="prompt" />
+      </astra-editor>
     </div>
 
     <br /><br />
@@ -126,6 +128,12 @@ SET temp_data = CONCAT(temp_data, ' - Updated with a long concatenation string t
     />
 
     <script>
+      const suggestion = [
+        "SELECT * FROM customers WHERE gender = 'F' \n customers.active = 'F'",
+        "SELECT * FROM customers WHERE gender = 'F' \n customers.active = 'F'\n country = 'Cambodia'",
+        "SELECT * FROM outerbase WHERE customer_name = 'Visal'",
+      ];
+
       const editorElement = document.getElementById("editor");
       const containerElement = document.getElementById("container");
       const schemaElement = document.getElementById("schema");
@@ -135,7 +143,7 @@ SET temp_data = CONCAT(temp_data, ' - Updated with a long concatenation string t
       const themeInput = document.getElementById("theme");
       const handlebarInput = document.getElementById("handlebar");
 
-      customElements.whenDefined("code-mirror").then(() => {
+      customElements.whenDefined("astra-editor").then(() => {
         editorElement.color = darkInput.checked ? "dark" : "light";
         editorElement.theme = themeInput.value;
 
@@ -146,12 +154,20 @@ SET temp_data = CONCAT(temp_data, ' - Updated with a long concatenation string t
         }
       });
 
+      customElements.whenDefined("astra-editor-prompt").then(() => {
+        const promptElement = document.getElementById("prompt");
+        promptElement.handleSuggestion(async () => {
+          await new Promise((r) => setTimeout(r, 1000));
+          return [suggestion[Math.floor(Math.random() * 3)]];
+        });
+      });
+
       schemaElement.onblur = () => {
         schemaPlugin.schema = schemaElement.value;
       };
 
       handlebarInput.onblur = () => {
-        document.getElementsByTagName("code-mirror-handlebar")[0].variables =
+        document.getElementsByTagName("astra-editor-handlebar")[0].variables =
           handlebarInput.value;
       };
 
